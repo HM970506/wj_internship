@@ -15,6 +15,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-konva": "^18.2.4",
+    "react-konva-image": "^0.0.1",
     "react-scripts": "5.0.1",
     "redux-toolkit": "^1.1.2",
     "styled-components": "^5.3.6",
