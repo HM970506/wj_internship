@@ -2,43 +2,43 @@
 
 ## SHAPES
 
-[] Rect
-[] Circle
-[] llipse
-[] Wedge
-[] Line - Simple Line
-[] Line - Polygon
-[] Line - Spline
-[] Line - Blob
-[] Sprite
-[] Image
-[] Text
-[] TextPath
-[] Star
-[] Ring
-[] Arc
-[] Label
-[] Path
-[] RegularPolygon
-[] Arrow
-[] Custom
+- [ ] Rect
+- [ ] Circle
+- [ ] llipse
+- [ ] Wedge
+- [ ] Line - Simple Line
+- [ ] Line - Polygon
+- [ ] Line - Spline
+- [ ] Line - Blob
+- [ ] Sprite
+- [ ] Image
+- [ ] Text
+- [ ] TextPath
+- [ ] Star
+- [ ] Ring
+- [ ] Arc
+- [ ] Label
+- [ ] Path
+- [ ] RegularPolygon
+- [ ] Arrow
+- [ ] Custom
 
 ## GUIDES
 
-[] Position vs Offset
-[] Tainted Canvas Issue
+- [ ] Position vs Offset
+- [ ] Tainted Canvas Issue
 
 ## STYLING
 
-[] Fill
-[] Stroke
-[] Opacity
-[] Shadow
-[] Line Join
-[] Hide and Show
-[] Mouse Cursor Style
-[] Blend Mode
-[] Fill Stroke Order
+- [ ] Fill
+- [ ] Stroke
+- [ ] Opacity
+- [ ] Shadow
+- [ ] Line Join
+- [ ] Hide and Show
+- [ ] Mouse Cursor Style
+- [ ] Blend Mode
+- [ ] Fill Stroke Order
 
 ## EVENTS
 
