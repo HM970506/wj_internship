@@ -9,7 +9,13 @@ import {
   useState,
 } from "react";
 import * as Konva from "react-konva";
-import { Layer, Rect, Stage, Transformer } from "react-konva";
+import {
+  KonvaNodeComponent,
+  Layer,
+  Rect,
+  Stage,
+  Transformer,
+} from "react-konva";
 
 interface shapePropsType {
   x: number;
@@ -57,7 +63,6 @@ const Rectangle = ({
 
   useEffect(() => {
     if (isSelected && transformerRef.current) {
-      console.log(transformerRef);
       transformerRef.current.nodes([shapeRef.current]);
       transformerRef.current.getLayer().batchDraw();
     }
@@ -71,6 +76,7 @@ const Rectangle = ({
         ref={shapeRef}
         {...shapeProps}
         draggable
+        onDragStart={onSelect}
         onDragEnd={(e) => {
           onChange({
             ...shapeProps,
