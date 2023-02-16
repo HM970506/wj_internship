@@ -2,11 +2,7 @@ import { Layer, Circle } from "react-konva";
 import ClickComponent from "./Click";
 
 const EventIndex = () => {
-  return (
-    <Layer>
-      <ClickComponent />
-    </Layer>
-  );
+  return <ClickComponent />;
 };
 
 export default EventIndex;

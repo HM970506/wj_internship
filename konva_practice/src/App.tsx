@@ -9,11 +9,7 @@ const App = () => {
   //나중에 렌더될수록 z축 커짐!
 
   //layer에는 이벤트 적용 못 함. 이벤트는 stage에!
-  return (
-    <Stage width={window.innerWidth} height={window.innerHeight}>
-      <EventIndex />
-    </Stage>
-  );
+  return <EventIndex />;
 };
 
 export default App;
