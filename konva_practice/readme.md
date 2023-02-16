@@ -23,49 +23,28 @@
 
 ## SELECT AND TRANSFORM
 
-Basic demo
-Centered Scaling
-Keep Ratio
-Styling
-Transform Events
-Resize Limits
-Rotation Snaps
-Resize Snaps
-Stop Transform
-Force Update
-Text Resizing
-Ignore Stroke
-CLIPPING
-Simple Clip
-Complex Clip
-GROUPS, LAYERS AND ORDERING
-Groups
-Layering
-Change Containers
-zIndex
+- [X] Basic demo
+- [X] Centered Scaling
+- [X] Keep Ratio
+- [X] Styling
+- [X] Transform Events
+- [X] Resize Limits
+- [X] Stop Transform
+- [ ] Text Resizing
 
-## SELECTORS
-
-Select by id
-Select by Type
-Select by Name
-DATA & SERIALIZATION & EXPORT
-Serialize a Stage
-Simple Load
-Complex Load
-JSON Best Practices
-Stage Data URL
-Export to HD Image
+## DATA & SERIALIZATION & EXPORT
+- [ ] Serialize a Stage
+- [ ] Simple Load
+- [ ] Complex Load
+- [ ] JSON Best Practices
+- [ ] Stage Data URL
+- [ ] Export to HD Image
 
 ## PERFORMANCE
 
-All tips
-Layer Management
-Batch Draw
-Shape Caching
-Optimize Animation
-Optimize Strokes
-Shape Redraw
-Disable Perfect Drawing
-Listening False
-Avoid Memory Leaks
+- [X] Layer Management
+- [ ] Shape Caching
+- [ ] Shape Redraw
+- [ ] Disable Perfect Drawing
+- [ ] Listening False
+- [ ] Avoid Memory Leaks
