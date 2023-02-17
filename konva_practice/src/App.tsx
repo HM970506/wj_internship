@@ -1,5 +1,6 @@
 import React from "react";
 import { Stage } from "react-konva";
+import greeneye from "./api/axios";
 import EventIndex from "./Konva/Event/index";
 import ShapeIndex from "./Konva/Shape/index";
 
@@ -10,6 +11,9 @@ const App = () => {
   //참고: 레이어를 너무 많이 만들지 마십시오. 일반적으로 3-5가 최대입니다.
 
   //layer에는 이벤트 적용 못 함. 이벤트는 stage에!
+
+  greeneye("https://kr.object.ncloudstorage.com/demo.jpg");
+
   return <EventIndex />;
 };
 
