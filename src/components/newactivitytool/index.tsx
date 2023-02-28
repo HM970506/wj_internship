@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  Background,
   Button,
   ButtonBox,
   Canvas,
@@ -11,46 +12,59 @@ import {
 } from "./style";
 
 export default function NewActivityTool() {
+  const newActivityTool = useRef<HTMLDialogElement>(null);
   const [subButtonVisible, setSubButtonVisible] = useState<boolean>(false);
-  const [toolsVisible, setToolsVisible] = useState<boolean>(false);
+  const [activitytools, setActivitytools] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (activitytools) newActivityTool.current?.showModal();
+    else newActivityTool.current?.close();
+  }, [activitytools]);
 
   const mainClick = () => {
-    if (!toolsVisible) setSubButtonVisible((x) => !x);
+    if (!activitytools) setSubButtonVisible((x) => !x);
     else {
       setSubButtonVisible(false);
-      setToolsVisible(false);
+      setActivitytools(false);
     }
   };
 
-  const start = () => {
+  const activitytoolsStart = () => {
     setSubButtonVisible(false);
-    setToolsVisible(true);
+    setActivitytools(true);
+  };
+
+  const activitytoolsEnd = () => {
+    setActivitytools(false);
   };
 
   return (
     <>
-      <ButtonBox>
-        {toolsVisible && (
-          <>
-            <Button>글상자</Button>
-            <Button>녹음</Button>
-            <Button>사진</Button>
-            <Button>스티커</Button>
-            <Button>도구</Button>
-          </>
-        )}
-        <MainButton onClick={mainClick}>test</MainButton>
-        {subButtonVisible && (
-          <>
-            <LoadButton>불러오기</LoadButton>
-            <NewButton onClick={start}>새로하기</NewButton>
-          </>
-        )}
-      </ButtonBox>
-      {toolsVisible && (
+      <Background ref={newActivityTool}>
+        <ToolBox>
+          <Button onClick={activitytoolsEnd}>나가기</Button>
+        </ToolBox>
+        <ButtonBox>
+          <Button>글상자</Button>
+          <Button>녹음</Button>
+          <Button>사진</Button>
+          <Button>스티커</Button>
+          <Button>도구</Button>
+          <Button>test</Button>
+        </ButtonBox>
+
+        <Canvas />
+      </Background>
+
+      {!activitytools && (
         <>
-          <ToolBox></ToolBox>
-          <Canvas />
+          <MainButton onClick={mainClick}>test</MainButton>
+          {subButtonVisible && (
+            <>
+              <LoadButton>불러오기</LoadButton>
+              <NewButton onClick={activitytoolsStart}>새로하기</NewButton>
+            </>
+          )}
         </>
       )}
     </>
