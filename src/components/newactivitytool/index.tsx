@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { Stage } from "react-konva";
+import { useSelector } from "react-redux";
 import {
   Background,
   Button,
@@ -10,12 +12,21 @@ import {
   SubButton,
   ToolBox,
 } from "./style";
-import Text from "./text";
+import TextButton from "./text";
+import { Text } from "react-konva";
+
+const nodeMaker = (value: any, key: number) => {
+  switch (value.type) {
+    case "text":
+      return <Text text={value.content} key={key} />;
+  }
+};
 
 export default function NewActivityTool() {
   const newActivityTool = useRef<HTMLDialogElement>(null);
   const [subButtonVisible, setSubButtonVisible] = useState<boolean>(false);
   const [activitytools, setActivitytools] = useState<boolean>(false);
+  const nodes = useSelector((state: any) => state.nodes);
 
   useEffect(() => {
     if (activitytools) newActivityTool.current?.showModal();
@@ -39,6 +50,9 @@ export default function NewActivityTool() {
     setActivitytools(false);
   };
 
+  //버튼들은 useCallback 등으로 메모이제이션 해두고,
+  //값은 redux로 계속 불러오기
+
   return (
     <>
       <Background ref={newActivityTool}>
@@ -46,7 +60,7 @@ export default function NewActivityTool() {
           <Button onClick={activitytoolsEnd}>나가기</Button>
         </ToolBox>
         <ButtonBox>
-          <Text />
+          <TextButton />
           <Button>녹음</Button>
           <Button>사진</Button>
           <Button>스티커</Button>
@@ -54,7 +68,12 @@ export default function NewActivityTool() {
           <Button>test</Button>
         </ButtonBox>
 
-        <Canvas />
+        <Stage>
+          {
+            nodes
+            //nodes.map((value: any, key: number) => nodeMaker(value, key))
+          }
+        </Stage>
       </Background>
 
       {!activitytools && (
