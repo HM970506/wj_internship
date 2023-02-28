@@ -10,6 +10,7 @@ import {
   SubButton,
   ToolBox,
 } from "./style";
+import Text from "./text";
 
 export default function NewActivityTool() {
   const newActivityTool = useRef<HTMLDialogElement>(null);
@@ -45,7 +46,7 @@ export default function NewActivityTool() {
           <Button onClick={activitytoolsEnd}>나가기</Button>
         </ToolBox>
         <ButtonBox>
-          <Button>글상자</Button>
+          <Text />
           <Button>녹음</Button>
           <Button>사진</Button>
           <Button>스티커</Button>
