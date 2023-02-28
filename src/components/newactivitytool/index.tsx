@@ -7,6 +7,7 @@ import {
   Text,
   KonvaNodeComponent,
 } from "react-konva";
+import * as Konva from "konva";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Background,
@@ -37,8 +38,8 @@ const Node = ({
   onSelect: any;
   onChange: any;
 }) => {
-  const shapeRef = useRef<KonvaNodeComponent>(null);
-  const trRef = useRef<>(null);
+  const shapeRef = useRef<typeof KonvaEventObjec>(null);
+  const trRef = useRef<typeof Transformer>(null);
 
   useEffect(() => {
     if (isSelected) {
@@ -114,7 +115,7 @@ export default function NewActivityTool() {
   const [activitytools, setActivitytools] = useState<boolean>(false);
   const [canvas, setCanvas] = useState<any[]>([]);
   const [selecteShape, selectShape] = useState<number | null>(null);
-  const canvasRef = useRef<stage>(null);
+  const canvasRef = useRef<typeof Stage>(null);
   const nodes = useSelector((state: any) => state.node.nodes);
   const dispatch = useDispatch();
 
