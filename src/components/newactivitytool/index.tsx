@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Stage } from "react-konva";
+import { Layer, Stage } from "react-konva";
 import { useSelector } from "react-redux";
 import {
   Background,
@@ -26,12 +26,17 @@ export default function NewActivityTool() {
   const newActivityTool = useRef<HTMLDialogElement>(null);
   const [subButtonVisible, setSubButtonVisible] = useState<boolean>(false);
   const [activitytools, setActivitytools] = useState<boolean>(false);
-  const nodes = useSelector((state: any) => state.nodes);
+  const [canvas, setCanvas] = useState<any[]>([]);
+  const nodes = useSelector((state: any) => state.node.nodes);
 
   useEffect(() => {
     if (activitytools) newActivityTool.current?.showModal();
     else newActivityTool.current?.close();
   }, [activitytools]);
+
+  useEffect(() => {
+    setCanvas(nodes);
+  }, [nodes]);
 
   const mainClick = () => {
     if (!activitytools) setSubButtonVisible((x) => !x);
@@ -68,11 +73,11 @@ export default function NewActivityTool() {
           <Button>test</Button>
         </ButtonBox>
 
-        <Stage>
-          {
-            nodes
-            //nodes.map((value: any, key: number) => nodeMaker(value, key))
-          }
+        <Stage width={window.innerWidth} height={window.innerHeight}>
+          <Layer>
+            {Array.isArray(canvas) &&
+              canvas.map((value: any, key: number) => nodeMaker(value, key))}
+          </Layer>
         </Stage>
       </Background>
 
