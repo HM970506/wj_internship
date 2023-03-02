@@ -19,15 +19,15 @@ import { actions as drawActions } from "../../store/common/drawSlice";
 
 const STICKER = "STICKER";
 const TEXT = "TEXT";
-const LINE = "LINE";
+const PEN = "PEN";
 const ERASER = "ERASER";
-type NodeType = "STICKER" | "TEXT" | "LINE" | "ERASER";
+type NodeType = "STICKER" | "TEXT" | "PEN" | "ERASER";
 type cursorMove =
   | Konva.KonvaEventObject<TouchEvent>
   | Konva.KonvaEventObject<MouseEvent>;
 
 interface drawPenType {
-  pen: string;
+  tool: string;
   color: string;
   size: number;
 }
@@ -99,7 +99,7 @@ const Node = ({
           )}
         </>
       );
-    case LINE:
+    case PEN:
       return (
         <Line
           tension={0.5}
@@ -111,7 +111,6 @@ const Node = ({
     case ERASER:
       return (
         <Line
-          points={[1]}
           tension={0.5}
           lineCap="round"
           globalCompositeOperation="destination-out"
@@ -194,7 +193,7 @@ export default function NewActivityTool() {
     const pos = e.target.getStage()?.getPointerPosition();
     dispatch(
       nodeActions.addNodes({
-        type: "LINE",
+        type: draws.tool,
         shapeProps: {
           stroke: draws.color,
           strokeWidth: draws.size,
@@ -241,7 +240,7 @@ export default function NewActivityTool() {
     <>
       <Background ref={newActivityTool}>
         <ToolBox>
-          <Button onClick={activitytoolsEnd}>나가기</Button>
+          <Button onClick={activitytoolsEnd}>활동툴 닫기</Button>
           <Button onClick={nodeRemove}>지우기</Button>
           <button
             onClick={() => {
@@ -302,7 +301,7 @@ export default function NewActivityTool() {
           {subButtonVisible && (
             <>
               <LoadButton>불러오기</LoadButton>
-              <NewButton onClick={activitytoolsStart}>새로하기</NewButton>
+              <NewButton onClick={activitytoolsStart}>활동툴 열기</NewButton>
             </>
           )}
         </>
