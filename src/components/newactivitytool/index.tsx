@@ -12,115 +12,11 @@ import {
   ToolBox,
 } from "./style";
 import TextButton from "./text";
-import Konva from "konva";
 import StickerButton from "./sticker";
 import { actions as nodeActions } from "../../store/common/nodeSlice";
 import { actions as drawActions } from "../../store/common/drawSlice";
-
-const STICKER = "STICKER";
-const TEXT = "TEXT";
-const PEN = "PEN";
-const ERASER = "ERASER";
-type NodeType = "STICKER" | "TEXT" | "PEN" | "ERASER";
-type cursorMove =
-  | Konva.KonvaEventObject<TouchEvent>
-  | Konva.KonvaEventObject<MouseEvent>;
-
-interface drawPenType {
-  tool: string;
-  color: string;
-  size: number;
-}
-
-const Node = ({
-  type,
-  shapeProps,
-  isSelected,
-  onSelect,
-  onChange,
-}: {
-  type: NodeType;
-  shapeProps: any;
-  isSelected: boolean;
-  onSelect: any;
-  onChange: any;
-}) => {
-  const shapeRef = useRef<any>(null);
-  const trRef = useRef<Konva.Transformer>(null);
-
-  useEffect(() => {
-    if (isSelected && trRef) {
-      trRef.current?.nodes([shapeRef.current]);
-      trRef.current?.getLayer()?.batchDraw();
-    }
-  }, [isSelected]);
-
-  switch (type) {
-    case TEXT:
-      return (
-        <>
-          <Text
-            draggable
-            onClick={onSelect}
-            onTap={onSelect}
-            onDragStart={onSelect}
-            ref={shapeRef}
-            {...shapeProps}
-          />
-          {isSelected && <Transformer ref={trRef} />}
-        </>
-      );
-    case STICKER:
-      return (
-        <>
-          <Rect
-            onClick={onSelect}
-            onTap={onSelect}
-            onDragStart={onSelect}
-            ref={shapeRef}
-            draggable
-            {...shapeProps}
-            onDragEnd={(e) => {
-              onChange({
-                ...shapeProps,
-                x: e.target.x(),
-                y: e.target.y(),
-              });
-            }}
-          />
-          {isSelected && (
-            <Transformer
-              ref={trRef}
-              boundBoxFunc={(oldBox, newBox) => {
-                if (newBox.width < 5 || newBox.height < 5) return oldBox;
-                else return newBox;
-              }}
-            />
-          )}
-        </>
-      );
-    case PEN:
-      return (
-        <Line
-          tension={0.5}
-          lineCap="round"
-          globalCompositeOperation="source-over"
-          {...shapeProps}
-        />
-      );
-    case ERASER:
-      return (
-        <Line
-          tension={0.5}
-          lineCap="round"
-          globalCompositeOperation="destination-out"
-          {...shapeProps}
-        />
-      );
-  }
-
-  return <></>;
-};
+import { cursorMove } from "./types";
+import Node from "./nodeMaker";
 
 export default function NewActivityTool() {
   const newActivityTool = useRef<HTMLDialogElement>(null);
@@ -129,8 +25,8 @@ export default function NewActivityTool() {
   const [canvas, setCanvas] = useState<any[]>([]); //노드들이 쌓이는 캔버스
   const [selectShapeIndex, setSelectShapeIndex] = useState<number | null>(null); //현재 선택 노드
   const canvasRef = useRef(null);
-  const nodes = useSelector((state: any) => state.nodeReducer.nodes);
-  const draws = useSelector((state: any) => state.drawReducer);
+  const nodes = useSelector((state: any) => state.nodeReducer.nodes); //노드 관리
+  const draws = useSelector((state: any) => state.drawReducer); //펜 관리
   const dispatch = useDispatch();
 
   //노드가 생성될 때마다 캔버스가 업데이트된다
@@ -166,8 +62,6 @@ export default function NewActivityTool() {
   const checkDeselect = (e: cursorMove) => {
     if (e.target == canvasRef.current) setSelectShapeIndex(null);
   };
-
-  const shapeChange = (newAttr: any) => {};
 
   const colorChange = (color: string) => {
     if (selectShapeIndex == null) dispatch(drawActions.colorChange(color));
@@ -279,14 +173,12 @@ export default function NewActivityTool() {
                 return (
                   <Node
                     key={key}
+                    index={key}
                     type={value.type}
                     shapeProps={value.shapeProps}
                     isSelected={key === selectShapeIndex}
                     onSelect={() => {
                       setSelectShapeIndex(key);
-                    }}
-                    onChange={(newAttrs: any) => {
-                      shapeChange(newAttrs);
                     }}
                   />
                 );

@@ -92,3 +92,14 @@ export const SideButton = styled.button<{ size: number }>`
 
   margin: 5px;
 `;
+
+export const TextEditor = styled.textarea<{ size: number }>`
+  border: 0;
+  background-color: white;
+  font-size: ${(props) => props.size + "px"};
+  padding: 3px;
+  margin: 0;
+  resize: none;
+  overflow: hidden;
+  outline: none;
+`;
