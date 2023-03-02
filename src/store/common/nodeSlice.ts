@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const nodeSlice = createSlice({
-  name: "node",
+  name: "nodeReducer",
   initialState: { nodes: new Array() },
 
   reducers: {
