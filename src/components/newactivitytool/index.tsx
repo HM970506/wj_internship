@@ -53,6 +53,7 @@ const Node = ({
             onClick={onSelect}
             onTap={onSelect}
             ref={shapeRef}
+            fontSize={shapeProps.fontsize}
           />
           <Transformer ref={trRef} />
         </>

@@ -79,3 +79,17 @@ export const Canvas = styled.div`
   left: 0;
   background-color: rgba(0, 0, 0, 0.2);
 `;
+
+export const SideButtonBox = styled.div`
+  position: absolute;
+  top: 0;
+  right: 100px;
+`;
+
+export const SideButton = styled.button<{ size: number }>`
+  width: 100px;
+  font-size: ${(props) => props.size + "px"};
+  border: none;
+  margin: 5px;
+  background-color: rgba(0, 0, 0, 0);
+`;
