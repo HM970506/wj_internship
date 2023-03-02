@@ -1,13 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Layer,
-  Rect,
-  Stage,
-  Transformer,
-  Text,
-  KonvaNodeComponent,
-} from "react-konva";
-import * as Konva from "konva";
+import { Layer, Rect, Stage, Transformer, Text } from "react-konva";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Background,
@@ -20,8 +12,12 @@ import {
   ToolBox,
 } from "./style";
 import TextButton from "./text";
-import { KonvaEventObject } from "konva/lib/Node";
+import * as konva from "konva/lib/Node";
 import StickerButton from "./sticker";
+
+const STICKER = "STICKER";
+const TEXT = "TEXT";
+type NodeType = "STICKER" | "TEXT";
 
 const Node = ({
   type,
@@ -31,25 +27,26 @@ const Node = ({
   onSelect,
   onChange,
 }: {
-  type: any;
+  type: NodeType;
   text: string;
   shapeProps: any;
   isSelected: any;
   onSelect: any;
   onChange: any;
 }) => {
-  const shapeRef = useRef<typeof KonvaEventObjec>(null);
-  const trRef = useRef<typeof Transformer>(null);
+  const shapeRef = useRef<any>(null);
+  const trRef = useRef(null);
 
   useEffect(() => {
-    if (isSelected) {
-      trRef.current?.nodes([shapeRef.current]);
-      trRef.current?.getLayer().batchDraw();
+    console.log(typeof trRef.current);
+    if (isSelected && trRef) {
+      //  trRef.current?.nodes([shapeRef.current]);
+      //  trRef.current?.getLayer().batchDraw();
     }
   }, [isSelected]);
 
   switch (type) {
-    case "text":
+    case TEXT:
       return (
         <>
           <Text
@@ -59,10 +56,10 @@ const Node = ({
             onTap={onSelect}
             ref={shapeRef}
           />
-          {isSelected && <Transformer ref={trRef} />}
+          <Transformer ref={trRef} />
         </>
       );
-    case "sticker":
+    case STICKER:
       return (
         <>
           <Rect
@@ -95,18 +92,18 @@ const Node = ({
               });
             }}
           />
-          {isSelected && (
-            <Transformer
-              ref={trRef}
-              boundBoxFunc={(oldBox, newBox) => {
-                if (newBox.width < 5 || newBox.height < 5) return oldBox;
-                else return newBox;
-              }}
-            />
-          )}
+          <Transformer
+            ref={trRef}
+            boundBoxFunc={(oldBox, newBox) => {
+              if (newBox.width < 5 || newBox.height < 5) return oldBox;
+              else return newBox;
+            }}
+          />
         </>
       );
   }
+
+  return <></>;
 };
 
 export default function NewActivityTool() {
@@ -115,7 +112,7 @@ export default function NewActivityTool() {
   const [activitytools, setActivitytools] = useState<boolean>(false);
   const [canvas, setCanvas] = useState<any[]>([]);
   const [selecteShape, selectShape] = useState<number | null>(null);
-  const canvasRef = useRef<typeof Stage>(null);
+  const canvasRef = useRef(null);
   const nodes = useSelector((state: any) => state.node.nodes);
   const dispatch = useDispatch();
 
@@ -150,13 +147,12 @@ export default function NewActivityTool() {
 
   //배경 누르면 선택 없애기
   const checkDeselect = (
-    e: KonvaEventObject<TouchEvent> | KonvaEventObject<MouseEvent>
+    e: konva.KonvaEventObject<TouchEvent> | konva.KonvaEventObject<MouseEvent>
   ) => {
     if (e.target == canvasRef.current) selectShape(null);
   };
 
   //변화하면, 리덕스 값을 수정합니다
-
   const shapeChange = (newAttr: any) => {};
 
   return (
@@ -183,21 +179,23 @@ export default function NewActivityTool() {
         >
           <Layer>
             {Array.isArray(canvas) &&
-              canvas.map((value: any, key: number) => (
-                <Node
-                  key={key}
-                  type={value.type}
-                  shapeProps={value.shapeProps}
-                  text={value.content}
-                  isSelected={key === selecteShape}
-                  onSelect={() => {
-                    selectShape(key);
-                  }}
-                  onChange={(newAttrs: any) => {
-                    shapeChange(newAttrs);
-                  }}
-                />
-              ))}
+              canvas.map((value: any, key: number) => {
+                return (
+                  <Node
+                    key={key}
+                    type={value.type}
+                    shapeProps={value.shapeProps}
+                    text={value.content}
+                    isSelected={key === selecteShape}
+                    onSelect={() => {
+                      selectShape(key);
+                    }}
+                    onChange={(newAttrs: any) => {
+                      shapeChange(newAttrs);
+                    }}
+                  />
+                );
+              })}
           </Layer>
         </Stage>
       </Background>

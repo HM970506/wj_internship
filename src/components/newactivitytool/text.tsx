@@ -6,7 +6,7 @@ export default function TextButton() {
   const dispatch = useDispatch();
 
   const addNodes = () => {
-    dispatch(actions.addNodes({ type: "text", content: "test" }));
+    dispatch(actions.addNodes({ type: "TEXT", content: "test" }));
   };
 
   return <Button onClick={addNodes}>글상자</Button>;
