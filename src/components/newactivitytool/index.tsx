@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import { Layer, Rect, Stage, Transformer, Text } from "react-konva";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,9 +12,8 @@ import {
   ToolBox,
 } from "./style";
 import TextButton from "./text";
-import * as konva from "konva/lib/Node";
+import Konva from "konva";
 import StickerButton from "./sticker";
-
 const STICKER = "STICKER";
 const TEXT = "TEXT";
 type NodeType = "STICKER" | "TEXT";
@@ -30,18 +29,17 @@ const Node = ({
   type: NodeType;
   text: string;
   shapeProps: any;
-  isSelected: any;
+  isSelected: boolean;
   onSelect: any;
   onChange: any;
 }) => {
   const shapeRef = useRef<any>(null);
-  const trRef = useRef(null);
+  const trRef = useRef<Konva.Transformer>(null);
 
   useEffect(() => {
-    console.log(typeof trRef.current);
     if (isSelected && trRef) {
-      //  trRef.current?.nodes([shapeRef.current]);
-      //  trRef.current?.getLayer().batchDraw();
+      trRef.current?.nodes([shapeRef.current]);
+      trRef.current?.getLayer()?.batchDraw();
     }
   }, [isSelected]);
 
@@ -51,7 +49,7 @@ const Node = ({
         <>
           <Text
             text={text}
-            draggable={true}
+            draggable
             onClick={onSelect}
             onTap={onSelect}
             ref={shapeRef}
@@ -63,10 +61,11 @@ const Node = ({
       return (
         <>
           <Rect
-            draggable={true}
             onClick={onSelect}
             onTap={onSelect}
+            onDragStart={onSelect}
             ref={shapeRef}
+            draggable
             {...shapeProps}
             onDragEnd={(e) => {
               onChange({
@@ -75,30 +74,16 @@ const Node = ({
                 y: e.target.y(),
               });
             }}
-            onTransformEnd={(e) => {
-              const node = shapeRef.current;
-              const scaleX = node.scaleX();
-              const scaleY = node.scaleY();
-
-              node.scaleX(1);
-              node.scaleY(1);
-              onChange({
-                ...shapeProps,
-                x: node.x(),
-                y: node.y(),
-                // set minimal value
-                // width: Math.max(5, node.width() * scaleX),
-                //  height: Math.max(node.height() * scaleY),
-              });
-            }}
           />
-          <Transformer
-            ref={trRef}
-            boundBoxFunc={(oldBox, newBox) => {
-              if (newBox.width < 5 || newBox.height < 5) return oldBox;
-              else return newBox;
-            }}
-          />
+          {isSelected && (
+            <Transformer
+              ref={trRef}
+              boundBoxFunc={(oldBox, newBox) => {
+                if (newBox.width < 5 || newBox.height < 5) return oldBox;
+                else return newBox;
+              }}
+            />
+          )}
         </>
       );
   }
@@ -147,7 +132,7 @@ export default function NewActivityTool() {
 
   //배경 누르면 선택 없애기
   const checkDeselect = (
-    e: konva.KonvaEventObject<TouchEvent> | konva.KonvaEventObject<MouseEvent>
+    e: Konva.KonvaEventObject<TouchEvent> | Konva.KonvaEventObject<MouseEvent>
   ) => {
     if (e.target == canvasRef.current) selectShape(null);
   };
