@@ -1,5 +1,5 @@
 import { SetStateAction, useEffect, useRef, useState } from "react";
-import { Layer, Rect, Stage, Transformer, Text } from "react-konva";
+import { Layer, Rect, Stage, Transformer, Text, Line } from "react-konva";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Background,
@@ -14,20 +14,26 @@ import {
 import TextButton from "./text";
 import Konva from "konva";
 import StickerButton from "./sticker";
+import { actions } from "../../store/common/nodeSlice";
+import { KonvaEventObject } from "konva/lib/Node";
+
 const STICKER = "STICKER";
 const TEXT = "TEXT";
-type NodeType = "STICKER" | "TEXT";
+const LINE = "LINE";
+const ERASER = "ERASER";
+type NodeType = "STICKER" | "TEXT" | "LINE" | "ERASER";
+type cursorMove =
+  | Konva.KonvaEventObject<TouchEvent>
+  | Konva.KonvaEventObject<MouseEvent>;
 
 const Node = ({
   type,
-  text,
   shapeProps,
   isSelected,
   onSelect,
   onChange,
 }: {
   type: NodeType;
-  text: string;
   shapeProps: any;
   isSelected: boolean;
   onSelect: any;
@@ -48,14 +54,14 @@ const Node = ({
       return (
         <>
           <Text
-            text={text}
             draggable
             onClick={onSelect}
             onTap={onSelect}
+            onDragStart={onSelect}
             ref={shapeRef}
-            fontSize={shapeProps.fontsize}
+            {...shapeProps}
           />
-          <Transformer ref={trRef} />
+          {isSelected && <Transformer ref={trRef} />}
         </>
       );
     case STICKER:
@@ -87,6 +93,27 @@ const Node = ({
           )}
         </>
       );
+    case LINE:
+      return (
+        <Line
+          strokeWidth={5}
+          tension={0.5}
+          lineCap="round"
+          globalCompositeOperation="source-over"
+          {...shapeProps}
+        />
+      );
+    case ERASER:
+      return (
+        <Line
+          points={[1]}
+          strokeWidth={5}
+          tension={0.5}
+          lineCap="round"
+          globalCompositeOperation="destination-out"
+          {...shapeProps}
+        />
+      );
   }
 
   return <></>;
@@ -94,22 +121,27 @@ const Node = ({
 
 export default function NewActivityTool() {
   const newActivityTool = useRef<HTMLDialogElement>(null);
-  const [subButtonVisible, setSubButtonVisible] = useState<boolean>(false);
-  const [activitytools, setActivitytools] = useState<boolean>(false);
-  const [canvas, setCanvas] = useState<any[]>([]);
-  const [selecteShape, selectShape] = useState<number | null>(null);
+  const [subButtonVisible, setSubButtonVisible] = useState<boolean>(false); //우측 버튼
+  const [activitytools, setActivitytools] = useState<boolean>(false); //하단 버튼과 캔버스
+  const [canvas, setCanvas] = useState<any[]>([]); //노드들이 쌓이는 캔버스
+  const [selectShapeIndex, setSelectShapeIndex] = useState<number | null>(null);
+  const [drawTool, setDrawTool] = useState<string | null>(null);
+  const [color, setColor] = useState<string>("black");
   const canvasRef = useRef(null);
-  const nodes = useSelector((state: any) => state.node.nodes);
+  const nodes = useSelector((state: any) => state.node.nodes); //리덕스에 쌓인 노드 정보를 가져옴
   const dispatch = useDispatch();
 
+  //노드가 생성될 때마다 캔버스가 업데이트된다
+  useEffect(() => {
+    setCanvas(nodes);
+  }, [nodes]);
+
+  //버튼 관련 부분 시작----
+  //버튼들은 useCallback 등으로 메모이제이션 해두기~
   useEffect(() => {
     if (activitytools) newActivityTool.current?.showModal();
     else newActivityTool.current?.close();
   }, [activitytools]);
-
-  useEffect(() => {
-    setCanvas(nodes);
-  }, [nodes]);
 
   const mainClick = () => {
     if (!activitytools) setSubButtonVisible((x) => !x);
@@ -123,29 +155,93 @@ export default function NewActivityTool() {
     setSubButtonVisible(false);
     setActivitytools(true);
   };
-
   const activitytoolsEnd = () => {
     setActivitytools(false);
   };
 
-  //버튼들은 useCallback 등으로 메모이제이션 해두고,
-  //값은 redux로 계속 불러오기
+  //버튼 관련 부분 끝-----
 
-  //배경 누르면 선택 없애기
-  const checkDeselect = (
-    e: Konva.KonvaEventObject<TouchEvent> | Konva.KonvaEventObject<MouseEvent>
-  ) => {
-    if (e.target == canvasRef.current) selectShape(null);
+  const checkDeselect = (e: cursorMove) => {
+    if (e.target == canvasRef.current) setSelectShapeIndex(null);
   };
 
-  //변화하면, 리덕스 값을 수정합니다
   const shapeChange = (newAttr: any) => {};
+
+  const colorChange = (color: string) => {
+    if (selectShapeIndex == null) {
+      setColor(color);
+    } else {
+      dispatch(
+        actions.modifyNodes({
+          index: selectShapeIndex,
+          modifyProps: { fill: color },
+        })
+      );
+    }
+  };
+
+  const nodeRemove = () => {
+    if (selectShapeIndex != null)
+      dispatch(actions.removeNodes(selectShapeIndex));
+  };
+
+  //선 관련된 부분 시작-----
+  const [isDrawing, setIsDrawing] = useState<boolean>(false);
+
+  const handleMouseDown = (e: cursorMove) => {
+    setIsDrawing(true);
+    const pos = e.target.getStage()?.getPointerPosition();
+    dispatch(
+      actions.addNodes({
+        type: "LINE",
+        shapeProps: {
+          stroke: color,
+          points: [pos?.x, pos?.y],
+        },
+      })
+    );
+  };
+
+  const handleMouseMove = (e: cursorMove) => {
+    if (isDrawing) {
+      const stage = e.target.getStage();
+      const point = stage?.getPointerPosition();
+      const index = nodes.length - 1;
+      dispatch(
+        actions.modifyNodes({
+          index: index,
+          modifyProps: {
+            points: [...nodes[index].shapeProps.points, point?.x, point?.y],
+          },
+        })
+      );
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDrawing(false);
+  };
+
+  const mouseDown = (e: cursorMove) => {
+    if (drawTool) handleMouseDown(e);
+    else checkDeselect(e);
+  };
 
   return (
     <>
       <Background ref={newActivityTool}>
         <ToolBox>
           <Button onClick={activitytoolsEnd}>나가기</Button>
+          <Button onClick={nodeRemove}>지우기</Button>
+          <button
+            onClick={() => {
+              setDrawTool("PEN");
+            }}
+          >
+            펜
+          </button>
+          <button onClick={() => colorChange("black")}>검은색</button>
+          <button onClick={() => colorChange("blue")}>파란색</button>
         </ToolBox>
         <ButtonBox>
           <TextButton />
@@ -159,8 +255,10 @@ export default function NewActivityTool() {
         <Stage
           width={window.innerWidth}
           height={window.innerHeight}
-          onMouseDown={checkDeselect}
+          onMouseDown={mouseDown}
           onTouchStart={checkDeselect}
+          onMousemove={handleMouseMove}
+          onMouseup={handleMouseUp}
           ref={canvasRef}
         >
           <Layer>
@@ -171,10 +269,9 @@ export default function NewActivityTool() {
                     key={key}
                     type={value.type}
                     shapeProps={value.shapeProps}
-                    text={value.content}
-                    isSelected={key === selecteShape}
+                    isSelected={key === selectShapeIndex}
                     onSelect={() => {
-                      selectShape(key);
+                      setSelectShapeIndex(key);
                     }}
                     onChange={(newAttrs: any) => {
                       shapeChange(newAttrs);

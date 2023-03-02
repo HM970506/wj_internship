@@ -15,8 +15,13 @@ export default function TextButton() {
     dispatch(
       actions.addNodes({
         type: "TEXT",
-        content: "test",
-        shapeProps: { fontsize: size },
+
+        shapeProps: {
+          fontSize: size,
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2,
+          text: "내용을 입력하세요",
+        },
       })
     );
   };

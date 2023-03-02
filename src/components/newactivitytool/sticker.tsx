@@ -10,8 +10,8 @@ export default function StickerButton() {
       actions.addNodes({
         type: "STICKER",
         shapeProps: {
-          x: 10,
-          y: 10,
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2,
           width: 100,
           height: 100,
           fill: "red",

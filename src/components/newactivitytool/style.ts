@@ -87,9 +87,8 @@ export const SideButtonBox = styled.div`
 `;
 
 export const SideButton = styled.button<{ size: number }>`
-  width: 100px;
+  width: 120px;
   font-size: ${(props) => props.size + "px"};
-  border: none;
+
   margin: 5px;
-  background-color: rgba(0, 0, 0, 0);
 `;
