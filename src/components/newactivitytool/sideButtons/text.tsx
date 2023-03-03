@@ -1,7 +1,8 @@
 import { Button, SideButton, SideButtonBox } from "../style";
-import { actions } from "../../../store/common/nodeSlice";
+import { nodeActions } from "../../../store/common/nodeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import { categoryActions } from "../../../store/common/categorySlice";
 
 const BIG = 25;
 const MIDIUM = 20;
@@ -9,11 +10,13 @@ const SMALL = 15;
 
 export default function TextButton() {
   const dispatch = useDispatch();
-  const [showSideButtons, setShowSideButtons] = useState<boolean>(false);
+  const nowCategory = useSelector(
+    (state: any) => state.categoryReducer.category
+  ); //노드 관리
 
   const addNodes = (size: number) => {
     dispatch(
-      actions.addNodes({
+      nodeActions.addNodes({
         type: "TEXT",
 
         shapeProps: {
@@ -28,7 +31,7 @@ export default function TextButton() {
 
   return (
     <>
-      {showSideButtons && (
+      {nowCategory === "TEXT" && (
         <SideButtonBox>
           <SideButton
             size={BIG}
@@ -58,7 +61,7 @@ export default function TextButton() {
       )}
       <Button
         onClick={() => {
-          setShowSideButtons((x) => !x);
+          dispatch(categoryActions.categoryChange("TEXT"));
         }}
       >
         글상자

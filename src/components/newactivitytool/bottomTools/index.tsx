@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
-import { actions as drawActions } from "../../../store/common/drawSlice";
-import { actions as nodeActions } from "../../../store/common/nodeSlice";
+import { drawActions } from "../../../store/common/drawSlice";
+import { nodeActions } from "../../../store/common/nodeSlice";
 import { Button, ToolBox } from "../style";
 
 export default function BottomTools({

@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
-import { actions } from "../../../store/common/nodeSlice";
+import { categoryActions } from "../../../store/common/categorySlice";
+import { nodeActions } from "../../../store/common/nodeSlice";
 import { Button } from "../style";
 
 export default function StickerButton() {
@@ -7,7 +8,7 @@ export default function StickerButton() {
 
   const addNodes = () => {
     dispatch(
-      actions.addNodes({
+      nodeActions.addNodes({
         type: "STICKER",
         shapeProps: {
           x: window.innerWidth / 2,
@@ -20,5 +21,13 @@ export default function StickerButton() {
     );
   };
 
-  return <Button onClick={addNodes}>스티커</Button>;
+  return (
+    <Button
+      onClick={() => {
+        dispatch(categoryActions.categoryChange("STICKER"));
+      }}
+    >
+      스티커
+    </Button>
+  );
 }

@@ -7,9 +7,10 @@ const categorySlice = createSlice({
   reducers: {
     categoryChange: (state, action: PayloadAction<any>) => {
       state.category = action.payload;
+      console.log("지금 카테고리: ", state.category);
     },
   },
 });
 
-export const actions = categorySlice.actions;
+export const categoryActions = categorySlice.actions;
 export default categorySlice.reducer;

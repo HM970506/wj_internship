@@ -1,6 +1,7 @@
 import { ChangeEvent, useCallback, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { actions } from "../../../store/common/nodeSlice";
+import { categoryActions } from "../../../store/common/categorySlice";
+import { nodeActions } from "../../../store/common/nodeSlice";
 import { Button, Uploader } from "../style";
 
 export default function PhotoButton() {
@@ -10,7 +11,7 @@ export default function PhotoButton() {
 
   const addNodes = (img: any) => {
     dispatch(
-      actions.addNodes({
+      nodeActions.addNodes({
         type: "PHOTO",
         shapeProps: {
           x: window.innerWidth / 2,
@@ -42,7 +43,13 @@ export default function PhotoButton() {
   };
 
   return (
-    <Button onClick={photoUpload}>
+    <Button
+      onClick={() => {
+        dispatch(categoryActions.categoryChange("PHOTO"));
+        //이거 왜 2번 실행되지..?
+        photoUpload();
+      }}
+    >
       <Uploader
         ref={inputRef}
         type="file"

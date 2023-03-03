@@ -20,5 +20,5 @@ const drawSlice = createSlice({
   },
 });
 
-export const actions = drawSlice.actions;
+export const drawActions = drawSlice.actions;
 export default drawSlice.reducer;
