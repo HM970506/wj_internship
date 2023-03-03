@@ -28,5 +28,5 @@ const nodeSlice = createSlice({
   },
 });
 
-export const actions = nodeSlice.actions;
+export const nodeActions = nodeSlice.actions;
 export default nodeSlice.reducer;

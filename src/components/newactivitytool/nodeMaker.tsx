@@ -13,7 +13,7 @@ import {
   TEXT,
   TransformerType,
 } from "./types";
-import { actions as nodeActions } from "../../store/common/nodeSlice";
+import { nodeActions } from "../../store/common/nodeSlice";
 
 export default function Node({
   index,

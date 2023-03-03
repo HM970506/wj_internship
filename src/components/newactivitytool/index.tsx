@@ -13,11 +13,10 @@ import {
 } from "./style";
 import TextButton from "./sideButtons/text";
 import StickerButton from "./sideButtons/sticker";
-import { actions as nodeActions } from "../../store/common/nodeSlice";
-import { actions as drawActions } from "../../store/common/drawSlice";
+import { nodeActions } from "../../store/common/nodeSlice";
+import { drawActions } from "../../store/common/drawSlice";
 import { cursorMove } from "./types";
 import Node from "./nodeMaker";
-import PhotoButton from "./sideButtons/photo";
 import BottomTools from "./bottomTools";
 import SideButtons from "./sideButtons";
 
