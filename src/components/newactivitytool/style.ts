@@ -103,3 +103,7 @@ export const TextEditor = styled.textarea<{ size: number }>`
   overflow: hidden;
   outline: none;
 `;
+
+export const Uploader = styled.input`
+  display: none;
+`;

@@ -1,5 +1,5 @@
-import { Button, SideButton, SideButtonBox } from "./style";
-import { actions } from "../../store/common/nodeSlice";
+import { Button, SideButton, SideButtonBox } from "../style";
+import { actions } from "../../../store/common/nodeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 

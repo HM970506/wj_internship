@@ -1,9 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { Rect, Transformer, Text, Line } from "react-konva";
-import { Html } from "react-konva-utils";
+import { Html, useImage } from "react-konva-utils";
 import { useDispatch, useSelector } from "react-redux";
 import { TextEditor } from "./style";
-import { ERASER, NodeType, PEN, STICKER, TEXT, TransformerType } from "./types";
+import {
+  BRUSH,
+  ERASER,
+  NodeType,
+  PEN,
+  PHOTO,
+  STICKER,
+  TEXT,
+  TransformerType,
+} from "./types";
 import { actions as nodeActions } from "../../store/common/nodeSlice";
 
 export default function Node({
@@ -38,7 +47,7 @@ export default function Node({
         modifyProps: { text: textRef.current?.value },
       })
     );
-    await shapeRef.current.show();
+    await shapeRef.current.show(); //show 이후에 dispatch가 반영된다. await를 써도 안 됨.
     setDbClick(false);
   };
 
@@ -121,7 +130,17 @@ export default function Node({
     case PEN:
       return (
         <Line
-          tension={0.5}
+          tension={0.1}
+          {...shapeProps}
+          fill={"none"}
+          lineCap="round"
+          globalCompositeOperation="source-over"
+        />
+      );
+    case BRUSH:
+      return (
+        <Line
+          tension={0.1}
           lineCap="round"
           globalCompositeOperation="source-over"
           {...shapeProps}
@@ -135,6 +154,36 @@ export default function Node({
           globalCompositeOperation="destination-out"
           {...shapeProps}
         />
+      );
+
+    case PHOTO:
+      return (
+        <>
+          <Rect
+            onClick={onSelect}
+            onTap={onSelect}
+            onDragStart={onSelect}
+            ref={shapeRef}
+            draggable
+            {...shapeProps}
+            onDragEnd={(e) => {
+              onChange({
+                ...shapeProps,
+                x: e.target.x(),
+                y: e.target.y(),
+              });
+            }}
+          />
+          {isSelected && (
+            <Transformer
+              ref={trRef}
+              boundBoxFunc={(oldBox, newBox) => {
+                if (newBox.width < 5 || newBox.height < 5) return oldBox;
+                else return newBox;
+              }}
+            />
+          )}
+        </>
       );
   }
 

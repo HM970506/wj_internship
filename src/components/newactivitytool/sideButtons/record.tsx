@@ -1,14 +1,14 @@
 import { useDispatch } from "react-redux";
-import { actions } from "../../store/common/nodeSlice";
-import { Button } from "./style";
+import { actions } from "../../../store/common/nodeSlice";
+import { Button } from "../style";
 
-export default function StickerButton() {
+export default function RecordButton() {
   const dispatch = useDispatch();
 
   const addNodes = () => {
     dispatch(
       actions.addNodes({
-        type: "STICKER",
+        type: "RECORD",
         shapeProps: {
           x: window.innerWidth / 2,
           y: window.innerHeight / 2,
@@ -20,5 +20,5 @@ export default function StickerButton() {
     );
   };
 
-  return <Button onClick={addNodes}>스티커</Button>;
+  return <Button onClick={addNodes}>녹음</Button>;
 }

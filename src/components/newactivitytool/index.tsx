@@ -11,12 +11,15 @@ import {
   SubButton,
   ToolBox,
 } from "./style";
-import TextButton from "./text";
-import StickerButton from "./sticker";
+import TextButton from "./sideButtons/text";
+import StickerButton from "./sideButtons/sticker";
 import { actions as nodeActions } from "../../store/common/nodeSlice";
 import { actions as drawActions } from "../../store/common/drawSlice";
 import { cursorMove } from "./types";
 import Node from "./nodeMaker";
+import PhotoButton from "./sideButtons/photo";
+import BottomTools from "./bottomTools";
+import SideButtons from "./sideButtons";
 
 export default function NewActivityTool() {
   const newActivityTool = useRef<HTMLDialogElement>(null);
@@ -63,23 +66,6 @@ export default function NewActivityTool() {
     if (e.target == canvasRef.current) setSelectShapeIndex(null);
   };
 
-  const colorChange = (color: string) => {
-    if (selectShapeIndex == null) dispatch(drawActions.colorChange(color));
-    else {
-      dispatch(
-        nodeActions.modifyNodes({
-          index: selectShapeIndex,
-          modifyProps: { fill: color },
-        })
-      );
-    }
-  };
-
-  const nodeRemove = () => {
-    if (selectShapeIndex != null)
-      dispatch(nodeActions.removeNodes(selectShapeIndex));
-  };
-
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
 
   const handleMouseDown = (e: cursorMove) => {
@@ -122,41 +108,11 @@ export default function NewActivityTool() {
     else checkDeselect(e);
   };
 
-  const toolChagne = (tool: string) => {
-    dispatch(drawActions.toolChange(tool));
-  };
-
-  const sizeChange = (size: number) => {
-    dispatch(drawActions.sizeChange(size));
-  };
-
   return (
     <>
       <Background ref={newActivityTool}>
-        <ToolBox>
-          <Button onClick={activitytoolsEnd}>활동툴 닫기</Button>
-          <Button onClick={nodeRemove}>지우기</Button>
-          <button
-            onClick={() => {
-              toolChagne("PEN");
-            }}
-          >
-            펜
-          </button>
-          <button onClick={() => colorChange("black")}>검은색</button>
-          <button onClick={() => colorChange("blue")}>파란색</button>
-          <button onClick={() => sizeChange(20)}>큰 브러쉬</button>
-          <button onClick={() => sizeChange(3)}>작은 브러쉬</button>
-          <button onClick={() => toolChagne("ERASER")}>지우개</button>
-        </ToolBox>
-        <ButtonBox>
-          <TextButton />
-          <Button>녹음</Button>
-          <Button>사진</Button>
-          <StickerButton />
-          <Button>도구</Button>
-          <Button>test</Button>
-        </ButtonBox>
+        <BottomTools selectShapeIndex={selectShapeIndex} />
+        <SideButtons activitytoolsEnd={activitytoolsEnd} />
 
         <Stage
           width={window.innerWidth}
